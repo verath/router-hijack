@@ -4,9 +4,9 @@
   "description": "Hijacking routers",
   "main": "src/index.js",
   "scripts": {
-    "build:dev": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack src/index.js dist/router-hijack.js",
-    "build:prod": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack src/index.js dist/router-hijack.min.js",
-    "build": "npm run build:dev && npm run build:prod"
+    "build:dev": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack",
+    "build:prod": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack",
+    "build": "npm run build:dev"
   },
   "repository": {
     "type": "git",

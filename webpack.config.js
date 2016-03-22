@@ -1,9 +1,15 @@
 'use strict';
 
+var path = require('path');
 var webpack = require('webpack');
 
 var env = process.env.NODE_ENV;
 var config = {
+    entry: path.join(__dirname, 'src'),
+    output: {
+        filename: 'bundle.js',
+        path: path.join(__dirname, 'build')
+    },
     module: {
         loaders: [
             // Run .js files trough babel
@@ -13,10 +19,6 @@ var config = {
                 loader: 'babel-loader'
             }
         ]
-    },
-    output: {
-        filename: 'bundle.js',
-        path: './built'
     },
     plugins: [
         new webpack.optimize.OccurenceOrderPlugin(),
@@ -29,7 +31,8 @@ var config = {
 if(env === 'production') {
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin()
-    )
+    );
+    config.output.filename = config.output.filename.replace(/\.js$/, '.min.js');
 }
 
 module.exports = config;
