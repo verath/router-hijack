@@ -28,7 +28,7 @@ var config = {
     ]
 };
 
-if(env === 'production') {
+if (env === 'production') {
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin()
     );
