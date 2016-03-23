@@ -10,6 +10,7 @@ var config = {
         filename: 'bundle.js',
         path: path.join(__dirname, 'build')
     },
+    devtool: 'cheap-module-eval-source-map',
     module: {
         loaders: [
             // Run .js files trough babel
@@ -28,11 +29,15 @@ var config = {
     ]
 };
 
+// Production specific settings
 if (env === 'production') {
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin()
     );
-    config.output.filename = config.output.filename.replace(/\.js$/, '.min.js');
+    config.output = {
+        filename: 'bundle.min.js',
+        path: path.join(__dirname, 'build')
+    };
 }
 
 module.exports = config;
