@@ -5,20 +5,18 @@ var webpack = require('webpack');
 
 var env = process.env.NODE_ENV;
 var config = {
-    entry: path.join(__dirname, 'src', 'main.js'),
+    entry: path.join(__dirname, 'src', 'main.ts'),
     output: {
         filename: 'bundle.js',
         path: path.join(__dirname, 'build')
     },
     devtool: 'cheap-module-eval-source-map',
+    resolve: {
+        extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
+    },
     module: {
         loaders: [
-            // Run .js files trough babel
-            {
-                test: /\.js$/,
-                exclude: /(node_modules|bower_components)/,
-                loader: 'babel-loader'
-            }
+            {test: /\.ts$/, loader: 'ts-loader'}
         ]
     },
     plugins: [

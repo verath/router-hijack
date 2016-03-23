@@ -1,3 +1,6 @@
+import {Promise} from 'es6-promise';
+
+
 function testIp(ip) {
     return new Promise((resolve) => {
         let xhr = new XMLHttpRequest();

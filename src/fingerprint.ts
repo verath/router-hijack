@@ -1,3 +1,5 @@
+import {Promise} from 'es6-promise';
+
 /**
  * A Fingerprint result for a successfully identified router.
  * @typedef {Object} FingerprintResult
@@ -6,7 +8,6 @@
  * @property {string} hwVersion
  * @property {string} fwVersion
  */
-
 
 /**
  *

@@ -1,9 +1,10 @@
+import {Promise} from 'es6-promise';
 
 import discover from './discover';
 import fingerprint from './fingerprint';
 import payload from './payload';
 
-function waitForDOMContentLoaded() {
+function waitForDOMContentLoaded() : Promise<any> {
     if(document.readyState === 'complete') {
         return Promise.resolve();
     } else {
