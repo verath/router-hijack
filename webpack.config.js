@@ -5,7 +5,7 @@ var webpack = require('webpack');
 
 var env = process.env.NODE_ENV;
 var config = {
-    entry: path.join(__dirname, 'src'),
+    entry: path.join(__dirname, 'src', 'main.js'),
     output: {
         filename: 'bundle.js',
         path: path.join(__dirname, 'build')
