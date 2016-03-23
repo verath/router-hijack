@@ -1,9 +1,9 @@
 # Project
 build
 
-## non-ts files in src, so IDE can do compilation
-src/*.js
-src/*.js.map
+## .js and .js.map files in src, so IDE can do compilation
+src/**/*.js
+src/**/*.js.map
 
 # node.js gitignore
 ## Logs

@@ -1,26 +1,13 @@
 import {Promise} from 'es6-promise';
+import {FingerprintResult} from "./FingerprintResult";
 
-/**
- * A Fingerprint result for a successfully identified router.
- * @typedef {Object} FingerprintResult
- * @property {string} ip
- * @property {string} vendor
- * @property {string} hwVersion
- * @property {string} fwVersion
- */
-
-/**
- *
- * @param ip
- * @returns {Promise}
- */
-function testIp(ip) {
+function testIp(ip):Promise<String> {
     return new Promise((resolve) => {
         let languageSrc = `http://${ip}/languages-en.js`;
         let frame = document.createElement('iframe');
         frame.style.display = 'none';
 
-        let done = (success) => {
+        let done = (success:boolean) => {
             languageScript.remove();
             frame.remove();
             resolve(success ? ip : null);
@@ -39,12 +26,7 @@ function testIp(ip) {
     });
 }
 
-/**
- *
- * @param ip
- * @returns FingerprintResult
- */
-function ipToFingerprintResult(ip) {
+function ipToFingerprintResult(ip):FingerprintResult {
     // We only match one router atm
     return {
         ip: ip,
@@ -55,15 +37,15 @@ function ipToFingerprintResult(ip) {
 }
 
 /**
- * Takes an array of ips and attempts to find out what (if any) router
- * is running at that ip.
+ * Takes an array of ips and attempts to find out what (if any)
+ * router is running at that ip.
  *
- * @param ips {Array}
- * @returns {Promise.<FingerprintResult>}
+ * @param ips
+ * @returns {Promise<FingerprintResult[]>}
  */
-export default function fingerprint(ips) {
+export default function fingerprint(ips:String[]):Promise<FingerprintResult[]> {
     let testPromises = ips.map(testIp);
     return Promise.all(testPromises).then((ips) => {
-       return ips.filter((ip) => ip != null).map(ipToFingerprintResult)
+        return ips.filter((ip) => ip != null).map(ipToFingerprintResult)
     });
 }

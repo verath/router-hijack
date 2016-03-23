@@ -4,8 +4,8 @@ import discover from './discover';
 import fingerprint from './fingerprint';
 import payload from './payload';
 
-function waitForDOMContentLoaded() : Promise<any> {
-    if(document.readyState === 'complete') {
+function waitForDOMContentLoaded():Promise<any> {
+    if (document.readyState === 'complete') {
         return Promise.resolve();
     } else {
         return new Promise((resolve) => {
