@@ -6,7 +6,8 @@
   "scripts": {
     "build:dev": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack",
     "build:prod": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack",
-    "build": "npm run build:dev"
+    "build": "npm run build:dev",
+    "watch": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack --watch"
   },
   "repository": {
     "type": "git",
