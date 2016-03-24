@@ -1,4 +1,4 @@
-import {FingerprintResult} from "./fingerprint/FingerprintResult";
+import FingerprintResult from "./fingerprint/FingerprintResult";
 
 export default function payload(fingerprintResults:FingerprintResult[]) {
     fingerprintResults.forEach((fpRes) => {

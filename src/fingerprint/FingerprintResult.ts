@@ -1,7 +1,7 @@
 /**
  * A result of a fingerprinting of an ip.
  */
-export interface FingerprintResult {
+interface FingerprintResult {
     /**
      * Ip of the router, e.g. "192.168.1.254"
      */
@@ -22,3 +22,5 @@ export interface FingerprintResult {
      */
     fwVersion:String
 }
+
+export default FingerprintResult;

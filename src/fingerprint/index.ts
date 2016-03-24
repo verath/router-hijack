@@ -1,5 +1,6 @@
 import {Promise} from 'es6-promise';
-import {FingerprintResult} from "./FingerprintResult";
+
+import FingerprintResult from "./FingerprintResult";
 
 function testIp(ip):Promise<String> {
     return new Promise((resolve) => {
@@ -48,4 +49,5 @@ export default function fingerprint(ips:String[]):Promise<FingerprintResult[]> {
     return Promise.all(testPromises).then((ips) => {
         return ips.filter((ip) => ip != null).map(ipToFingerprintResult)
     });
+
 }
