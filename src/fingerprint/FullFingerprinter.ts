@@ -1,10 +1,10 @@
 import FingerprinterGroup from "./FingerprinterGroup";
-import RouterFingerprinterGroup from "./router/RouterFingerprinterGroup";
+import NetgearFingerprinterGroup from "./netgear/NetgearFingerprinterGroup";
 
 class FullFingerprinter extends FingerprinterGroup {
     constructor() {
         super([
-            new RouterFingerprinterGroup()
+            new NetgearFingerprinterGroup()
         ]);
     }
 }

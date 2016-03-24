@@ -1,6 +1,7 @@
 import {Promise} from 'es6-promise';
 
 import FingerprintResult from "./FingerprintResult";
+import FullFingerprinter from "./FullFingerprinter";
 
 function testIp(ip):Promise<String> {
     return new Promise((resolve) => {
@@ -39,7 +40,7 @@ function ipToFingerprintResult(ip):FingerprintResult {
 
 /**
  * Takes an array of ips and attempts to find out what (if any)
- * router is running at that ip.
+ * router is running at each ip.
  *
  * @param ips
  * @returns {Promise<FingerprintResult[]>}
