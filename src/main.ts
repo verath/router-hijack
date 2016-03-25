@@ -1,7 +1,7 @@
 import {Promise} from 'es6-promise';
 
 import doDiscover from './discover';
-import doFingerprint from './fingerprint';
+import doFingerprint from "./fingerprint/fingerprint";
 import doPayload from './payload';
 
 function waitForDOMContentLoaded():Promise<any> {
