@@ -1,11 +1,14 @@
 import {Promise} from 'es6-promise';
 
-import Fingerprinter from "../Fingerprinter";
-import FingerprintResult from "../FingerprintResult";
+import BaseFingerprinter from "../BaseFingerprinter";
 
-class WNDR3700Fingerprinter implements Fingerprinter {
+class WNDR3700Fingerprinter extends BaseFingerprinter {
 
-    private testIp(ip):Promise<Boolean> {
+    constructor() {
+        super('NETGEAR', 'WNDR3700');
+    }
+
+    protected testIp(ip):Promise<boolean> {
         return new Promise((resolve) => {
             let languageSrc = `http://${ip}/languages-en.js`;
             let frame = document.createElement('iframe');
@@ -27,20 +30,6 @@ class WNDR3700Fingerprinter implements Fingerprinter {
 
             document.body.appendChild(frame);
             frame.contentWindow.document.body.appendChild(languageScript);
-        });
-    }
-
-    fingerprint(ip:String):Promise<FingerprintResult[]> {
-        return this.testIp(ip).then(testPassed => {
-            let results = [];
-            if(testPassed) {
-                results.push({
-                    ip: ip,
-                    vendor: 'NETGEAR',
-                    hwVersion: 'WNDR3700'
-                });
-            }
-            return results;
         });
     }
 }

@@ -11,7 +11,7 @@ import Fingerprinter from "./Fingerprinter";
  * @param ips
  * @returns {Promise<FingerprintResult[]>}
  */
-export default function doFingerprint(ips:String[]):Promise<FingerprintResult[]> {
+export default function doFingerprint(ips:string[]):Promise<FingerprintResult[]> {
     let fullFingerprinter:Fingerprinter = new FullFingerprinter();
     let initialValue:Promise<FingerprintResult[]>;
     initialValue = Promise.resolve([]);

@@ -16,7 +16,7 @@ abstract class FingerprinterGroup implements Fingerprinter {
      * @param ip
      * @returns {Promise<FingerprintResult[]>}
      */
-    fingerprint(ip:String):Promise<FingerprintResult[]> {
+    fingerprint(ip:string):Promise<FingerprintResult[]> {
         let initialValue:Promise<FingerprintResult[]>;
         initialValue = Promise.resolve([]);
 

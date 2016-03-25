@@ -1,6 +1,6 @@
 import {Promise} from 'es6-promise';
 
-function testIp(ip):Promise<String> {
+function testIp(ip):Promise<string> {
     return new Promise((resolve) => {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', `http://${ip}/`, true);
@@ -20,7 +20,7 @@ function testIp(ip):Promise<String> {
  * Attempts to discover interesting ip addresses of possible routers
  * on the private network.
  */
-export default function doDiscover():Promise<String[]> {
+export default function doDiscover():Promise<string[]> {
     let ipsToTest = [];
     for (let i = 0; i < 255; i++) {
         ipsToTest.push(`192.168.1.${i}`);
