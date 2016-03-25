@@ -10,17 +10,26 @@ abstract class FingerprinterGroup implements Fingerprinter {
         this.fingerprinters = fingerprinters;
     }
 
+    /**
+     * Takes an ip and runs each fingerprinter in the group for that ip.
+     *
+     * @param ip
+     * @returns {Promise<FingerprintResult[]>}
+     */
     fingerprint(ip:String):Promise<FingerprintResult[]> {
-        // Run each fingerprinter at the same time.
-        // NOTE: Might not want to do this if the number
-        // of fingerprinters is large
-        let promises = this.fingerprinters.map(fingerprinter => fingerprinter.fingerprint(ip));
+        let initialValue:Promise<FingerprintResult[]>;
+        initialValue = Promise.resolve([]);
 
-        return Promise.all(promises).then(results => {
-            // results here is an array of results, one for each
-            // fingerprinter => have to flatten it.
-            results.reduce((a, b) => a.concat(b));
-        });
+        // Run each fingerprinter sequentially, collect the results of all
+        // fingerprinters and return a flattened list of results.
+        // TODO: Rewrite in a less complicated way
+        return this.fingerprinters.reduce((prevPromise, fingerprinter) => {
+            return prevPromise.then((prevResult:FingerprintResult[]) => {
+                // Run the next fingerprinter, and append its result to
+                // the result of the previous promise
+                return fingerprinter.fingerprint(ip).then(result => prevResult.concat(result));
+            });
+        }, initialValue);
     }
 }
 
