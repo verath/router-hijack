@@ -1,8 +1,8 @@
 import {Promise} from 'es6-promise';
 
-import discover from './discover';
-import fingerprint from './fingerprint';
-import payload from './payload';
+import doDiscover from './discover';
+import doFingerprint from './fingerprint';
+import doPayload from './payload';
 
 function waitForDOMContentLoaded():Promise<any> {
     if (document.readyState === 'complete') {
@@ -17,9 +17,9 @@ function waitForDOMContentLoaded():Promise<any> {
 (function main() {
     waitForDOMContentLoaded()
         .then(() => console.time("execTime"))
-        .then(discover)
-        .then(fingerprint)
-        .then(payload)
+        .then(doDiscover)
+        .then(doFingerprint)
+        .then(doPayload)
         .then(() => console.timeEnd("execTime"))
         .catch((err) => {
             console.error("Error caught in main!");

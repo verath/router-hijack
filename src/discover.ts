@@ -20,7 +20,7 @@ function testIp(ip):Promise<String> {
  * Attempts to discover interesting ip addresses of possible routers
  * on the private network.
  */
-export default function discover():Promise<String[]> {
+export default function doDiscover():Promise<String[]> {
     let ipsToTest = [];
     for (let i = 0; i < 255; i++) {
         ipsToTest.push(`192.168.1.${i}`);

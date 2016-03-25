@@ -45,7 +45,7 @@ function ipToFingerprintResult(ip):FingerprintResult {
  * @param ips
  * @returns {Promise<FingerprintResult[]>}
  */
-export default function fingerprint(ips:String[]):Promise<FingerprintResult[]> {
+export default function doFingerprint(ips:String[]):Promise<FingerprintResult[]> {
     let testPromises = ips.map(testIp);
     return Promise.all(testPromises).then((ips) => {
         return ips.filter((ip) => ip != null).map(ipToFingerprintResult)
