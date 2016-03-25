@@ -1,4 +1,4 @@
-import {Promise} from 'es6-promise';
+import {Promise} from "es6-promise";
 
 function testIp(ip):Promise<string> {
     return new Promise((resolve) => {

@@ -1,5 +1,4 @@
-import {Promise} from 'es6-promise';
-
+import {Promise} from "es6-promise";
 import FingerprintResult from "./FingerprintResult";
 
 interface Fingerprinter {

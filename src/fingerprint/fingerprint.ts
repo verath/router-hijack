@@ -1,5 +1,4 @@
-import {Promise} from 'es6-promise';
-
+import {Promise} from "es6-promise";
 import FingerprintResult from "./FingerprintResult";
 import FullFingerprinter from "./FullFingerprinter";
 import Fingerprinter from "./Fingerprinter";
