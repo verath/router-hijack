@@ -1,5 +1,9 @@
 import {Promise} from 'es6-promise';
 
+interface ScriptVerifyFunction {
+    (context:Window):boolean
+}
+
 export default class FingerprintUtil {
 
     /**
@@ -50,6 +54,68 @@ export default class FingerprintUtil {
         return Promise.all(loadPromises).then((loadResults:boolean[]) => {
             return loadResults.every(r => r);
         });
+    }
+
+    /**
+     * Attempts to load and run a script. The script is executed within an iframe, to
+     * keep the script's execution separate from the global window object. After the
+     * script has loaded, the verifyFunc is called with the window object of the frame
+     * where the script was run. This can be used to check for e.g. properties set on
+     * the window by the script.
+     *
+     * @param scriptUrl The Url of the script to load and run
+     * @param verifyFunc A function that takes a window object of the frame where the
+     *                  script was executed and returns a boolean indicating whether
+     *                  the script did was what expected (e.g. if it did set certain
+     *                  variables).
+     * @param [timeout=1000] Time to wait for the script to load (ms).
+     * @returns {Promise<boolean>}
+     */
+    static tryRunScript(scriptUrl:string, verifyFunc:ScriptVerifyFunction, timeout:number = 1000):Promise<boolean> {
+        return new Promise((resolve) => {
+            let frame:HTMLIFrameElement = document.createElement('iframe');
+            let script:HTMLScriptElement = document.createElement('script');
+            let timeoutId:number;
+            let done = (success:boolean) => {
+                if (script != null) {
+                    script.remove();
+                    script = null;
+                }
+                if (frame != null) {
+                    frame.remove();
+                    frame = null;
+                }
+                clearTimeout(timeoutId);
+                resolve(success);
+            };
+
+            frame.sandbox.add('allow-scripts', 'allow-same-origin');
+            frame.style.display = 'none';
+            script.src = scriptUrl;
+            script.addEventListener('load', () => {
+                let success = verifyFunc(frame.contentWindow);
+                done(success);
+            });
+            script.addEventListener('error', () => done(false));
+
+            document.body.appendChild(frame);
+            frame.contentWindow.document.body.appendChild(script);
+            timeoutId = setTimeout(() => done(false), timeout);
+        });
+    }
+
+    /**
+     * Attempts to load all scripts provided. Returns a promise resolved with a
+     * boolean for if the script was loaded within the timeout or not. This is
+     * simply wrapper around tryRunScript, providing an always true verifyFunc.
+     *
+     * @see tryRunScript
+     * @param scriptUrl
+     * @param timeout
+     * @returns {Promise<boolean>}
+     */
+    static tryLoadScript(scriptUrl:string, timeout:number = 1000):Promise<boolean> {
+        return FingerprintUtil.tryRunScript(scriptUrl, () => true, timeout);
     }
 }
 

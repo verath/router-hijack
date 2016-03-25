@@ -1,6 +1,6 @@
-import {Promise} from 'es6-promise';
-
+import {Promise} from "es6-promise";
 import BaseFingerprinter from "../BaseFingerprinter";
+import FingerprintUtil from "../FingerprintUtil";
 
 class WNDR3700Fingerprinter extends BaseFingerprinter {
 
@@ -9,28 +9,13 @@ class WNDR3700Fingerprinter extends BaseFingerprinter {
     }
 
     protected testIp(ip):Promise<boolean> {
-        return new Promise((resolve) => {
-            let languageSrc = `http://${ip}/languages-en.js`;
-            let frame = document.createElement('iframe');
-            frame.style.display = 'none';
-
-            let done = (success:boolean) => {
-                languageScript.remove();
-                frame.remove();
-                resolve(success ? ip : null);
-            };
-
-            let languageScript = document.createElement('script');
-            languageScript.src = languageSrc;
-            languageScript.addEventListener('load', () => {
-                let isMatch = (frame.contentWindow['know_href'] === "http://kbserver.netgear.com/wndr3700.asp");
-                done(isMatch);
-            });
-            languageScript.addEventListener('error', () => done(false));
-
-            document.body.appendChild(frame);
-            frame.contentWindow.document.body.appendChild(languageScript);
+        let testLanguageScript = FingerprintUtil.tryRunScript(`http://${ip}/languages-en.js`, (ctx:Window) => {
+            return ctx['know_href'] === "http://kbserver.netgear.com/wndr3700.asp";
         });
+
+        return Promise.all([
+            testLanguageScript
+        ]).then((results:boolean[]) => results.every(r => r))
     }
 }
 
