@@ -19,22 +19,23 @@ export default class FingerprintUtil {
             let image:HTMLImageElement = document.createElement("img");
             let timeoutId:number;
             let done = (success:boolean) => {
-                if (image != null) {
-                    image.remove();
-                    image = null;
-                }
                 clearTimeout(timeoutId);
+                image.removeEventListener('load', onLoad);
+                image.removeEventListener('error', onError);
+                image.remove();
                 resolve(success);
             };
+            let onLoad = () => done(true);
+            let onError = () => done(false);
+            let onTimeout = () => done(false);
+
             image.src = imageUrl;
-            image.addEventListener('loadstart', () => {
-                console.log('loadstart')
-            });
-            image.addEventListener('load', () => done(true));
-            image.addEventListener('error', () => done(false));
             image.style.display = 'none';
+            image.addEventListener('load', onLoad);
+            image.addEventListener('error', onError);
+
             document.body.appendChild(image);
-            timeoutId = setTimeout(() => done(false), timeout);
+            timeoutId = setTimeout(onTimeout, timeout);
         });
     }
 
@@ -77,30 +78,29 @@ export default class FingerprintUtil {
             let script:HTMLScriptElement = document.createElement('script');
             let timeoutId:number;
             let done = (success:boolean) => {
-                if (script != null) {
-                    script.remove();
-                    script = null;
-                }
-                if (frame != null) {
-                    frame.remove();
-                    frame = null;
-                }
                 clearTimeout(timeoutId);
+                script.removeEventListener('load', onLoad);
+                script.removeEventListener('error', onError);
+                script.remove();
+                frame.remove();
                 resolve(success);
             };
+            let onLoad = () => {
+                let success = verifyFunc(frame.contentWindow);
+                done(success);
+            };
+            let onError = () => done(false);
+            let onTimeout = () => done(false);
 
             frame.sandbox.add('allow-scripts', 'allow-same-origin');
             frame.style.display = 'none';
             script.src = scriptUrl;
-            script.addEventListener('load', () => {
-                let success = verifyFunc(frame.contentWindow);
-                done(success);
-            });
-            script.addEventListener('error', () => done(false));
+            script.addEventListener('load', onLoad);
+            script.addEventListener('error', onError);
 
             document.body.appendChild(frame);
             frame.contentWindow.document.body.appendChild(script);
-            timeoutId = setTimeout(() => done(false), timeout);
+            timeoutId = setTimeout(onTimeout, timeout);
         });
     }
 
