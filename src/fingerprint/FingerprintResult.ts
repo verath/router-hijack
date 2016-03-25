@@ -5,22 +5,22 @@ interface FingerprintResult {
     /**
      * Ip of the router, e.g. "192.168.1.254"
      */
-    ip:String,
+    ip:string,
 
     /**
      * Vendor of the router, e.g. "NETGEAR"
      */
-    vendor:String,
+    vendor?:string,
 
     /**
      * Hardware version, e.g. "WNDR3700"
      */
-    hwVersion:String,
+    hwVersion?:string,
 
     /**
      * Firmware version. E.g. "1.0.7.98"
      */
-    fwVersion:String
+    fwVersion?:string
 }
 
 export default FingerprintResult;
