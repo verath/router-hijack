@@ -10,7 +10,7 @@ var config = {
         filename: 'bundle.js',
         path: path.join(__dirname, 'build')
     },
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'source-map',
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
     },
