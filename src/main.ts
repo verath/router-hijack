@@ -1,5 +1,5 @@
 import {Promise} from "es6-promise";
-import doDiscover from "./discover";
+import doDiscover from "./discover/index";
 import doFingerprint from "./fingerprint/index";
 import doPayload from "./payload";
 
