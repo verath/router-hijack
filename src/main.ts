@@ -1,7 +1,7 @@
 import {Promise} from "es6-promise";
 import doDiscover from "./discover/index";
 import doFingerprint from "./fingerprint/index";
-import doPayload from "./payload";
+import doPayload from "./payload/index";
 
 function waitForDOMContentLoaded():Promise<any> {
     if (document.readyState === 'complete') {
