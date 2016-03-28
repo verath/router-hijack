@@ -2,7 +2,7 @@ import FingerprinterGroup from "../FingerprinterGroup";
 import WNDR3700Fingerprinter from "./WNDR3700/WNDR3700Fingerprinter";
 import WGT624Fingerprinter from "./WGT624/WGT624Fingerprinter";
 
-class NetgearFingerprinterGroup extends FingerprinterGroup {
+class NetgearFingerprinter extends FingerprinterGroup {
     constructor() {
         super([
             new WNDR3700Fingerprinter(),
@@ -11,4 +11,4 @@ class NetgearFingerprinterGroup extends FingerprinterGroup {
     }
 }
 
-export default NetgearFingerprinterGroup;
+export default NetgearFingerprinter;
