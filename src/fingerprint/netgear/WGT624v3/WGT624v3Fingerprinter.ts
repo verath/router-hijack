@@ -2,10 +2,10 @@ import {Promise} from "es6-promise";
 import FingerprintUtil from "../../FingerprinterUtil";
 import BaseFingerprinter from "../../BaseFingerprinter";
 
-class WGT624Fingerprinter extends BaseFingerprinter {
+class WGT624v3Fingerprinter extends BaseFingerprinter {
 
     constructor() {
-        super('NETGEAR', 'WGT624');
+        super('NETGEAR', 'WGT624v3');
     }
 
     protected testIp(ip):Promise<boolean> {
@@ -27,4 +27,4 @@ class WGT624Fingerprinter extends BaseFingerprinter {
     }
 }
 
-export default WGT624Fingerprinter;
+export default WGT624v3Fingerprinter;
