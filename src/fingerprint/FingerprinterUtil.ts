@@ -4,7 +4,7 @@ interface ScriptVerifyFunction {
     (context:Window):boolean
 }
 
-export default class FingerprintUtil {
+export default class FingerprinterUtil {
 
     /**
      * Attempts to load an image at the url. Returns a promise resolved with a
@@ -51,7 +51,7 @@ export default class FingerprintUtil {
      * @returns {Promise<boolean>}
      */
     static tryLoadAllImages(imageUrls:string[], timeout:number = 1000):Promise<boolean> {
-        let loadPromises = imageUrls.map(url => FingerprintUtil.tryLoadImage(url, timeout));
+        let loadPromises = imageUrls.map(url => FingerprinterUtil.tryLoadImage(url, timeout));
         return Promise.all(loadPromises).then((loadResults:boolean[]) => {
             return loadResults.every(r => r);
         });
@@ -115,7 +115,7 @@ export default class FingerprintUtil {
      * @returns {Promise<boolean>}
      */
     static tryLoadScript(scriptUrl:string, timeout:number = 1000):Promise<boolean> {
-        return FingerprintUtil.tryRunScript(scriptUrl, () => true, timeout);
+        return FingerprinterUtil.tryRunScript(scriptUrl, () => true, timeout);
     }
 }
 
