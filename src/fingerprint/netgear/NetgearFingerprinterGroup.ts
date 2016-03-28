@@ -1,6 +1,6 @@
 import FingerprinterGroup from "../FingerprinterGroup";
-import WNDR3700Fingerprinter from "./WNDR3700Fingerprinter";
-import WGT624Fingerprinter from "./WGT624Fingerprinter";
+import WNDR3700Fingerprinter from "./WNDR3700/WNDR3700Fingerprinter";
+import WGT624Fingerprinter from "./WGT624/WGT624Fingerprinter";
 
 class NetgearFingerprinterGroup extends FingerprinterGroup {
     constructor() {

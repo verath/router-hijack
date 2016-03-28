@@ -1,6 +1,6 @@
 import {Promise} from "es6-promise";
-import FingerprintUtil from "../FingerprinterUtil";
-import BaseFingerprinter from "../BaseFingerprinter";
+import FingerprintUtil from "../../FingerprinterUtil";
+import BaseFingerprinter from "../../BaseFingerprinter";
 
 class WGT624Fingerprinter extends BaseFingerprinter {
 
