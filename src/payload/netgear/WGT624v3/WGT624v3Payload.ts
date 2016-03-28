@@ -1,21 +1,40 @@
 import {Promise} from "es6-promise";
-import Payload from "../../Payload";
 import FingerprintResult from "../../../fingerprint/FingerprintResult";
+import BasePayload from "../../BasePayload";
+import BasicAuthCredential from "../../BasicAuthCredential";
 
-class WGT624v3Payload implements Payload {
+class WGT624v3Payload extends BasePayload {
+    private auth:BasicAuthCredential;
 
-    isTarget(fingerprint:FingerprintResult):boolean {
+    constructor(fingerprintResult:FingerprintResult) {
+        super(fingerprintResult);
+    }
+
+    isTarget():boolean {
         return (
-            fingerprint.vendor === 'NETGEAR' &&
-            fingerprint.hwVersion === 'WGT624v3'
+            this.fingerprintResult.vendor === 'NETGEAR' &&
+            this.fingerprintResult.hwVersion === 'WGT624v3'
         );
     }
 
-    run(ip:string):Promise<any> {
-        return Promise.resolve().then(() => {
-            console.log("WGT624v3Payload");
-            return true;
-        });
+    runPayload():Promise<any> {
+        return Promise.resolve()
+            .then(() => this.guessAuth())
+            .then(() => this.verifyFWVersion())
+            .then(() => this.hijackDNS());
+    }
+
+
+    private guessAuth() {
+
+    }
+
+    private verifyFWVersion() {
+
+    }
+
+    private hijackDNS() {
+
     }
 }
 
