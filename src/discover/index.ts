@@ -1,10 +1,14 @@
 import {Promise} from "es6-promise";
 
+function findLocalIPs():string[] {
+    return [];
+}
+
 function testIp(ip):Promise<string> {
     return new Promise((resolve) => {
         let xhr = new XMLHttpRequest();
         xhr.open('GET', `http://${ip}/`, true);
-        xhr.timeout = 1000;
+        xhr.timeout = 2000;
         xhr.onload = () => resolve(ip);
         // We assume onerror is called only because the request
         // was denied for cross domain reasons. If that holds,
@@ -22,9 +26,30 @@ function testIp(ip):Promise<string> {
  */
 export default function doDiscover():Promise<string[]> {
     let ipsToTest = [];
-    for (let i = 0; i < 255; i++) {
-        ipsToTest.push(`192.168.1.${i}`);
+
+    // Assume subnet mask is 255.255.255.0 and that router is in
+    // bottom or top 5 ips of subnet
+    let routerIpSuffixes = [
+        '.0', '.1', '.2', '.3', '.4',
+        '.250', '.251', '.252', '.253', '.254'
+    ];
+
+    let localIps = findLocalIPs();
+    if(localIps.length === 0) {
+        // If we can not determine local ip, guess some common ones
+        localIps.push('192.168.0.x');
+        localIps.push('192.168.1.x');
     }
+
+    for(let ip of localIps) {
+        let ipParts = ip.split('.');
+        let localSubnet = [ipParts[0], ipParts[1], ipParts[2]].join('.');
+        routerIpSuffixes.forEach((suffix) => {
+            ipsToTest.push(localSubnet + suffix);
+        });
+    }
+
+    console.log('discover', 'ipsToTest', ipsToTest.join(', '));
 
     let testPromises = ipsToTest.map(testIp);
     return Promise.all(testPromises).then((ips) => {
