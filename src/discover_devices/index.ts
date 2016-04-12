@@ -35,7 +35,7 @@ function findFromLocalIps(localIps:IPAddress[]):Promise<IPAddress[]> {
         });
     }
 
-    console.log('discover', 'ipsToTest', ipsToTest.map(ip => ip.toString()));
+    console.log('discover_devices', 'ipsToTest', ipsToTest.map(ip => ip.toString()));
 
     let testPromises = ipsToTest.map(testIp);
     return Promise.all(testPromises).then((ips) => {
@@ -47,6 +47,6 @@ function findFromLocalIps(localIps:IPAddress[]):Promise<IPAddress[]> {
  * Attempts to discover interesting ip addresses of possible routers
  * on the private network.
  */
-export default function doDiscover(localIps:IPAddress[]):Promise<IPAddress[]> {
+export default function doDiscoverDevices(localIps:IPAddress[]):Promise<IPAddress[]> {
     return findFromLocalIps(localIps);
 }

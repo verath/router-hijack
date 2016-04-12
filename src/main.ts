@@ -1,5 +1,5 @@
 import {Promise} from "es6-promise";
-import doDiscover from "./discover/index";
+import doDiscoverDevices from "./discover_devices/index";
 import doFingerprint from "./fingerprint/index";
 import doPayload from "./payload/index";
 import doLocalIp from "./local_ip/index";
@@ -18,7 +18,7 @@ function waitForDOMContentLoaded():Promise<any> {
     waitForDOMContentLoaded()
         .then(() => console.time("execTime"))
         .then(doLocalIp)
-        .then(doDiscover)
+        .then(doDiscoverDevices)
         .then(doFingerprint)
         .then(doPayload)
         .then(() => console.timeEnd("execTime"))
