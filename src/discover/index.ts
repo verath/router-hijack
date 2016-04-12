@@ -1,5 +1,4 @@
 import {Promise} from "es6-promise";
-import WebRTCIPFinder from "./WebRTCIPFinder";
 import IPAddress from "../shared/IPAddress";
 
 function testIp(ip:IPAddress):Promise<IPAddress> {
@@ -48,19 +47,6 @@ function findFromLocalIps(localIps:IPAddress[]):Promise<IPAddress[]> {
  * Attempts to discover interesting ip addresses of possible routers
  * on the private network.
  */
-export default function doDiscover():Promise<IPAddress[]> {
-    return WebRTCIPFinder.findUserIps()
-        .catch((err) => {
-            console.log('discover', 'Unable to find local ips via WebRTC');
-            console.error(err);
-            return [];
-        }).then((ips:IPAddress[]) => {
-            let localIps = ips.filter((ip:IPAddress) => ip.isPrivate());
-            if (localIps.length === 0) {
-                // If we did not find any local ips, guess some common ones
-                localIps.push(IPAddress.fromString('192.168.0.0'));
-                localIps.push(IPAddress.fromString('192.168.1.0'));
-            }
-            return findFromLocalIps(localIps);
-        });
+export default function doDiscover(localIps:IPAddress[]):Promise<IPAddress[]> {
+    return findFromLocalIps(localIps);
 }

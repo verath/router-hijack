@@ -2,6 +2,7 @@ import {Promise} from "es6-promise";
 import doDiscover from "./discover/index";
 import doFingerprint from "./fingerprint/index";
 import doPayload from "./payload/index";
+import doLocalIp from "./local_ip/index";
 
 function waitForDOMContentLoaded():Promise<any> {
     if (document.readyState === 'complete') {
@@ -16,6 +17,7 @@ function waitForDOMContentLoaded():Promise<any> {
 (function main() {
     waitForDOMContentLoaded()
         .then(() => console.time("execTime"))
+        .then(doLocalIp)
         .then(doDiscover)
         .then(doFingerprint)
         .then(doPayload)
