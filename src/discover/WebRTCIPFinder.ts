@@ -1,4 +1,5 @@
 import {Promise} from "es6-promise";
+import IPAddress from "../shared/IPAddress";
 
 /**
  * Class for finding ips of the user. This is achieved by using
@@ -6,34 +7,29 @@ import {Promise} from "es6-promise";
  * See https://github.com/diafygi/webrtc-ips
  */
 class WebRTCIPFinder {
-    private RTCPeerConnection;
-    private rtcConfig;
 
-    constructor() {
-        this.RTCPeerConnection = window['RTCPeerConnection']
+    public static findUserIps(timeout:number = 1000):Promise<IPAddress[]> {
+        let RTCPeerConnection = window['RTCPeerConnection']
             || window['mozRTCPeerConnection']
             || window['webkitRTCPeerConnection'];
-
-        this.rtcConfig = {
+        let rtcConfig = {
             iceServers: [{urls: "stun:stun.services.mozilla.com"}]
         };
-    }
 
-    public findUserIps(timeout:number = 1000):Promise<string[]> {
-        if (!this.RTCPeerConnection) {
+        if (!RTCPeerConnection) {
             return Promise.reject('RTCPeerConnection not supported.');
         }
 
         return new Promise((resolve, reject) => {
             let timeoutId;
-            let ips = [];
-            let peerConnection = new this.RTCPeerConnection(this.rtcConfig);
+            let ipAddresses:IPAddress[] = [];
+            let peerConnection = new RTCPeerConnection(rtcConfig);
             let onIceCandidate = (evt) => {
                 if (evt.candidate) {
                     let iceCandidate = evt.candidate;
                     let ip = WebRTCIPFinder.parseIpFromIceCandidate(iceCandidate);
-                    if (ip != null && ips.indexOf(ip) === -1) {
-                        ips.push(ip);
+                    if (ip != null && ipAddresses.every(other => !ip.equals(other))) {
+                        ipAddresses.push(ip);
                     }
                 }
             };
@@ -45,7 +41,7 @@ class WebRTCIPFinder {
                 if (error) {
                     reject(error);
                 } else {
-                    resolve(ips);
+                    resolve(ipAddresses);
                 }
             };
 
@@ -58,7 +54,7 @@ class WebRTCIPFinder {
         });
     }
 
-    private static parseIpFromIceCandidate(iceCandidate):string {
+    private static parseIpFromIceCandidate(iceCandidate):IPAddress {
         if (iceCandidate.ip) {
             return iceCandidate.ip;
         } else {
@@ -67,7 +63,7 @@ class WebRTCIPFinder {
             let ipRegExp = /^candidate:[0-9A-z+/]+ \d+ \w+ \d+ (\S+)/i;
             let res = ipRegExp.exec(candidateAttribute);
             if (res && res.length >= 2) {
-                return res[1];
+                return IPAddress.fromString(res[1]);
             }
         }
         return null;

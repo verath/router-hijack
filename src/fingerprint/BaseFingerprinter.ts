@@ -1,6 +1,7 @@
 import {Promise} from "es6-promise";
 import Fingerprinter from "./Fingerprinter";
 import FingerprintResult from "./FingerprintResult";
+import IPAddress from "../shared/IPAddress";
 
 abstract class BaseFingerprinter implements Fingerprinter {
 
@@ -23,7 +24,7 @@ abstract class BaseFingerprinter implements Fingerprinter {
     }
 
 
-    fingerprint(ip:string):Promise<FingerprintResult[]> {
+    fingerprint(ip:IPAddress):Promise<FingerprintResult[]> {
         return this.testIp(ip).then(testPassed => {
             let results:FingerprintResult[] = [];
             if (testPassed) {
@@ -47,7 +48,7 @@ abstract class BaseFingerprinter implements Fingerprinter {
      * @param ip
      * @returns {Promise<boolean>}
      */
-    protected abstract testIp(ip:string):Promise<boolean>;
+    protected abstract testIp(ip:IPAddress):Promise<boolean>;
 }
 
 export default BaseFingerprinter;

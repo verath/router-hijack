@@ -1,6 +1,7 @@
 import {Promise} from "es6-promise";
 import Fingerprinter from "./Fingerprinter";
 import FingerprintResult from "./FingerprintResult";
+import IPAddress from "../shared/IPAddress";
 
 abstract class FingerprinterGroup implements Fingerprinter {
     private fingerprinters:Fingerprinter[] = [];
@@ -15,7 +16,7 @@ abstract class FingerprinterGroup implements Fingerprinter {
      * @param ip
      * @returns {Promise<FingerprintResult[]>}
      */
-    fingerprint(ip:string):Promise<FingerprintResult[]> {
+    fingerprint(ip:IPAddress):Promise<FingerprintResult[]> {
         let initialValue:Promise<FingerprintResult[]>;
         initialValue = Promise.resolve([]);
 

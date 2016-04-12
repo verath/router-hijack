@@ -2,6 +2,7 @@ import {Promise} from "es6-promise";
 import FingerprintResult from "./FingerprintResult";
 import FullFingerprinter from "./FullFingerprinter";
 import Fingerprinter from "./Fingerprinter";
+import IPAddress from "../shared/IPAddress";
 
 /**
  * Takes an array of ips and attempts to find out what (if any)
@@ -10,7 +11,7 @@ import Fingerprinter from "./Fingerprinter";
  * @param ips
  * @returns {Promise<FingerprintResult[]>}
  */
-export default function doFingerprint(ips:string[]):Promise<FingerprintResult[]> {
+export default function doFingerprint(ips:IPAddress[]):Promise<FingerprintResult[]> {
     let fullFingerprinter:Fingerprinter = new FullFingerprinter();
     let initialValue:Promise<FingerprintResult[]>;
     initialValue = Promise.resolve([]);

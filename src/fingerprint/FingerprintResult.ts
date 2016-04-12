@@ -1,11 +1,12 @@
+import IPAddress from "../shared/IPAddress";
 /**
  * A result of a fingerprinting of an ip.
  */
 interface FingerprintResult {
     /**
-     * Ip of the router, e.g. "192.168.1.254"
+     * Ip of the router
      */
-    ip:string,
+    ip:IPAddress,
 
     /**
      * Vendor of the router, e.g. "NETGEAR"

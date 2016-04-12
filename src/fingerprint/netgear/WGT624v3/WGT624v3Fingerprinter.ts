@@ -1,6 +1,7 @@
 import {Promise} from "es6-promise";
 import FingerprintUtil from "../../FingerprinterUtil";
 import BaseFingerprinter from "../../BaseFingerprinter";
+import IPAddress from "../../../shared/IPAddress";
 
 class WGT624v3Fingerprinter extends BaseFingerprinter {
 
@@ -8,7 +9,7 @@ class WGT624v3Fingerprinter extends BaseFingerprinter {
         super('NETGEAR', 'WGT624v3');
     }
 
-    protected testIp(ip):Promise<boolean> {
+    protected testIp(ip:IPAddress):Promise<boolean> {
         let imageFiles = [
             "108g_logo.jpg",
             "BSW_network.gif",

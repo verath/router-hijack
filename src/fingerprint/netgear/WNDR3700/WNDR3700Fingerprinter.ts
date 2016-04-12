@@ -1,6 +1,7 @@
 import {Promise} from "es6-promise";
 import BaseFingerprinter from "../../BaseFingerprinter";
 import FingerprintUtil from "../../FingerprinterUtil";
+import IPAddress from "../../../shared/IPAddress";
 
 class WNDR3700Fingerprinter extends BaseFingerprinter {
 
@@ -8,7 +9,7 @@ class WNDR3700Fingerprinter extends BaseFingerprinter {
         super('NETGEAR', 'WNDR3700');
     }
 
-    protected testIp(ip):Promise<boolean> {
+    protected testIp(ip:IPAddress):Promise<boolean> {
         let testLanguageScript = FingerprintUtil.tryRunScript(`http://${ip}/languages-en.js`, (ctx:Window) => {
             return ctx['know_href'] === "http://kbserver.netgear.com/wndr3700.asp";
         });
