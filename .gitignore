@@ -1,5 +1,5 @@
 # Project
-build
+dist
 
 ## .js and .js.map files in src, so IDE can do compilation
 src/**/*.js

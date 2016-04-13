@@ -16,10 +16,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "clean-webpack-plugin": "^0.1.8",
     "cross-env": "^1.0.7",
-    "webpack": "^1.12.14",
+    "git-sha-webpack-plugin": "0.0.6",
+    "html-webpack-plugin": "^2.15.0",
     "ts-loader": "^0.8.1",
-    "typescript": "^1.8.9"
+    "typescript": "^1.8.9",
+    "webpack": "^1.12.14"
   },
   "dependencies": {
     "es6-promise": "^3.1.2"
