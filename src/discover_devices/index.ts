@@ -1,5 +1,6 @@
 import {Promise} from "es6-promise";
 import IPAddress from "../shared/IPAddress";
+import PromiseUtil from "../shared/PromiseUtil";
 
 function testIp(ip:IPAddress):Promise<IPAddress> {
     return new Promise((resolve) => {
@@ -45,9 +46,11 @@ function findFromLocalIps(localIps:IPAddress[]):Promise<IPAddress[]> {
 
     console.log('discover_devices', 'ipsToTest', ipsToTest.map(ip => ip.toString()));
 
-    let testPromises = ipsToTest.map(testIp);
-    return Promise.all(testPromises).then((ips) => {
-        return ips.filter((ip) => ip != null);
+    let testPromiseFuncs = ipsToTest.map((ip) => {
+        return () => testIp(ip)
+    });
+    return PromiseUtil.sequentially(testPromiseFuncs).then((ips:IPAddress[]) => {
+        return ips.filter(ip => ip != null);
     });
 }
 

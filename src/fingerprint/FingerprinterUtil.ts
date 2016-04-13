@@ -1,4 +1,5 @@
 import {Promise} from "es6-promise";
+import PromiseUtil from "../shared/PromiseUtil";
 
 interface ScriptVerifyFunction {
     (context:Window):boolean
@@ -52,8 +53,10 @@ export default class FingerprinterUtil {
      * @returns {Promise<boolean>}
      */
     static tryLoadAllImages(imageUrls:string[], timeout:number = 1000):Promise<boolean> {
-        let loadPromises = imageUrls.map(url => FingerprinterUtil.tryLoadImage(url, timeout));
-        return Promise.all(loadPromises).then((loadResults:boolean[]) => {
+        let loadPromiseFuncs = imageUrls.map(url => {
+            return () => FingerprinterUtil.tryLoadImage(url, timeout)
+        });
+        return PromiseUtil.sequentially(loadPromiseFuncs).then((loadResults:boolean[]) => {
             return loadResults.every(r => r);
         });
     }

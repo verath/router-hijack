@@ -2,6 +2,7 @@ import {Promise} from "es6-promise";
 import Fingerprinter from "./Fingerprinter";
 import FingerprintResult from "./FingerprintResult";
 import IPAddress from "../shared/IPAddress";
+import PromiseUtil from "../shared/PromiseUtil";
 
 abstract class FingerprinterGroup implements Fingerprinter {
     private fingerprinters:Fingerprinter[] = [];
@@ -17,19 +18,14 @@ abstract class FingerprinterGroup implements Fingerprinter {
      * @returns {Promise<FingerprintResult[]>}
      */
     fingerprint(ip:IPAddress):Promise<FingerprintResult[]> {
-        let initialValue:Promise<FingerprintResult[]>;
-        initialValue = Promise.resolve([]);
+        let promiseFuncs = this.fingerprinters.map((fingerprinter:Fingerprinter) => {
+            return () => fingerprinter.fingerprint(ip);
+        });
 
-        // Run each fingerprinter sequentially, collect the results of all
-        // fingerprinters and return a flattened list of results.
-        // TODO: Rewrite in a less complicated way
-        return this.fingerprinters.reduce((prevPromise, fingerprinter) => {
-            return prevPromise.then((prevResult:FingerprintResult[]) => {
-                // Run the next fingerprinter, and append its result to
-                // the result of the previous promise
-                return fingerprinter.fingerprint(ip).then(result => prevResult.concat(result));
-            });
-        }, initialValue);
+        return PromiseUtil.sequentially(promiseFuncs).then((result:FingerprintResult[][]) => {
+            // Flatten FingerprintResult[][] -> FingerprintResult[]
+            return result.reduce((prev, curr) => prev.concat(curr), []);
+        });
     }
 }
 

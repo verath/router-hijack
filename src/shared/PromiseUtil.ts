@@ -1,6 +1,6 @@
 import {Promise} from "es6-promise";
 
-interface PromiseFunction<T> {
+export interface PromiseFunction<T> {
     ():Promise<T>
 }
 
