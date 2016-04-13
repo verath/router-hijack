@@ -4,15 +4,23 @@ import IPAddress from "../shared/IPAddress";
 function testIp(ip:IPAddress):Promise<IPAddress> {
     return new Promise((resolve) => {
         let xhr = new XMLHttpRequest();
+        let done = (success:boolean, reason:string) => {
+            xhr.onload = null;
+            xhr.onerror = null;
+            xhr.ontimeout = null;
+            xhr.abort();
+            resolve(success ? ip : null);
+            console.log('testIp', `http://${ip}/`, success, reason);
+        };
         xhr.open('GET', `http://${ip}/`, true);
         xhr.timeout = 2000;
-        xhr.onload = () => resolve(ip);
+        xhr.onload = () => done(true, 'onload');
         // We assume onerror is called only because the request
         // was denied for cross domain reasons. If that holds,
         // we also know that if we get an error instead of a
         // timeout, there is likely a web server at the ip.
-        xhr.onerror = () => resolve(ip);
-        xhr.ontimeout = () => resolve(null);
+        xhr.onerror = () => done(true, 'onerror');
+        xhr.ontimeout = () => done(false, 'ontimeout');
         xhr.send(null);
     });
 }

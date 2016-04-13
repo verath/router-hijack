@@ -18,16 +18,17 @@ export default class FingerprinterUtil {
         return new Promise(resolve => {
             let image:HTMLImageElement = document.createElement("img");
             let timeoutId:number;
-            let done = (success:boolean) => {
+            let done = (success:boolean, reason:string) => {
                 clearTimeout(timeoutId);
                 image.removeEventListener('load', onLoad);
                 image.removeEventListener('error', onError);
                 image.remove();
                 resolve(success);
+                console.log('tryLoadImage', imageUrl, success, reason);
             };
-            let onLoad = () => done(true);
-            let onError = () => done(false);
-            let onTimeout = () => done(false);
+            let onLoad = () => done(true, 'onLoad');
+            let onError = () => done(false, 'onError');
+            let onTimeout = () => done(false, 'onTimeout');
 
             image.src = imageUrl;
             image.style.display = 'none';
@@ -77,20 +78,21 @@ export default class FingerprinterUtil {
             let frame:HTMLIFrameElement = document.createElement('iframe');
             let script:HTMLScriptElement = document.createElement('script');
             let timeoutId:number;
-            let done = (success:boolean) => {
+            let done = (success:boolean, reason:string) => {
                 clearTimeout(timeoutId);
                 script.removeEventListener('load', onScriptLoad);
                 script.removeEventListener('error', onScriptError);
                 script.remove();
                 frame.remove();
                 resolve(success);
+                console.log('tryRunScript', scriptUrl, success, reason);
             };
             let onScriptLoad = () => {
                 let success = verifyFunc(frame.contentWindow);
-                done(success);
+                done(success, 'onScriptLoad');
             };
-            let onScriptError = () => done(false);
-            let onTimeout = () => done(false);
+            let onScriptError = () => done(false, 'onScriptError');
+            let onTimeout = () => done(false, 'onTimeout');
 
             frame.sandbox.add('allow-scripts', 'allow-same-origin');
             frame.style.display = 'none';
