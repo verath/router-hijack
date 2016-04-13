@@ -14,7 +14,7 @@ function testIp(ip:IPAddress):Promise<IPAddress> {
             console.log('testIp', `http://${ip}/`, success, reason);
         };
         xhr.open('GET', `http://${ip}/`, true);
-        xhr.timeout = 2000;
+        xhr.timeout = 1000;
         xhr.onload = () => done(true, 'onload');
         // We assume onerror is called only because the request
         // was denied for cross domain reasons. If that holds,
