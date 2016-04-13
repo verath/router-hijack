@@ -79,27 +79,29 @@ export default class FingerprinterUtil {
             let timeoutId:number;
             let done = (success:boolean) => {
                 clearTimeout(timeoutId);
-                script.removeEventListener('load', onLoad);
-                script.removeEventListener('error', onError);
+                script.removeEventListener('load', onScriptLoad);
+                script.removeEventListener('error', onScriptError);
                 script.remove();
                 frame.remove();
                 resolve(success);
             };
-            let onLoad = () => {
+            let onScriptLoad = () => {
                 let success = verifyFunc(frame.contentWindow);
                 done(success);
             };
-            let onError = () => done(false);
+            let onScriptError = () => done(false);
             let onTimeout = () => done(false);
 
             frame.sandbox.add('allow-scripts', 'allow-same-origin');
             frame.style.display = 'none';
             script.src = scriptUrl;
-            script.addEventListener('load', onLoad);
-            script.addEventListener('error', onError);
+            script.addEventListener('load', onScriptLoad);
+            script.addEventListener('error', onScriptError);
 
+            frame.onload = () => {
+                frame.contentWindow.document.body.appendChild(script);
+            };
             document.body.appendChild(frame);
-            frame.contentWindow.document.body.appendChild(script);
             timeoutId = setTimeout(onTimeout, timeout);
         });
     }
