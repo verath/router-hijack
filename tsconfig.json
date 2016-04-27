@@ -5,7 +5,8 @@
     "sourceMap": true
   },
   "files": [
+    "typings/main.d.ts",
     "./src/main.ts",
-    "typings/main.d.ts"
+    "./src/exploit/netgear_WGT624v3.ts"
   ]
 }

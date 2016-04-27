@@ -2,13 +2,15 @@
 
 var path = require('path');
 var webpack = require('webpack');
-var GitSHAPlugin = require('git-sha-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 
 var env = process.env.NODE_ENV;
 var config = {
-    entry: path.join(__dirname, 'src', 'main.ts'),
+    entry: {
+        app: path.join(__dirname, 'src', 'main.ts'),
+        netgear_WGT624v3: path.join(__dirname, 'src', 'exploit', 'netgear_WGT624v3.ts')
+    },
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
     },
@@ -22,10 +24,11 @@ var config = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(env)
         }),
-        new GitSHAPlugin({shaLength: 7}),
         new HtmlWebpackPlugin({
+            chunks: ['app'],
             title: 'Router Hijack',
-            filename: 'index.html'
+            filename: 'index.html',
+            hash: true
         })
     ]
 };
@@ -34,21 +37,26 @@ var config = {
 if (env === 'development') {
     config.devtool = 'source-map';
     config.output = {
-        filename: 'bundle-dev.js',
+        filename: '[name].js',
         path: path.join(__dirname, 'dist', 'dev')
     };
 }
 
 // production specific settings
 if (env === 'production') {
+    var gitRevision = require('child_process').execSync('git rev-parse HEAD').toString().trim();
+
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin()
     );
     config.plugins.push(
+        new webpack.BannerPlugin('Router Hijack - rev ' + gitRevision)
+    );
+    config.plugins.push(
         new CleanWebpackPlugin(path.join('dist', 'prod'))
-    )
+    );
     config.output = {
-        filename: 'bundle-[chunkgitsha].min.js',
+        filename: '[name].js',
         path: path.join(__dirname, 'dist', 'prod')
     };
 }

@@ -18,7 +18,6 @@
   "devDependencies": {
     "clean-webpack-plugin": "^0.1.8",
     "cross-env": "^1.0.7",
-    "git-sha-webpack-plugin": "0.0.6",
     "html-webpack-plugin": "^2.15.0",
     "ts-loader": "^0.8.1",
     "typescript": "^1.8.9",
