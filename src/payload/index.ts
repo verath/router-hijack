@@ -11,7 +11,11 @@ export default function doPayload(fingerprintResults:FingerprintResult[]) {
         document.writeln('<br>');
 
         let wgt624v3Payload = new WGT624v3Payload(fpRes);
-        return wgt624v3Payload.run();
+        if(wgt624v3Payload.isTarget()) {
+            return wgt624v3Payload.run();
+        } else {
+            return Promise.resolve(false);
+        }
     });
 
     return Promise.all(promises);
