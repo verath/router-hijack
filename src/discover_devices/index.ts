@@ -28,9 +28,10 @@ function testIp(ip:IPAddress):Promise<IPAddress> {
 
 function findFromLocalIps(localIps:IPAddress[]):Promise<IPAddress[]> {
     // Assume subnet mask is 255.255.255.0 and that router is in
-    // bottom or top 5 ips of subnet
+    // bottom or top 4 ips of subnet. .0 and .255 is thought to be
+    // illegal/not used. https://en.wikipedia.org/wiki/IPv4#Addresses_ending_in_0_or_255
     let routerIpSuffixes:number[] = [
-        0, 1, 2, 3, 4,
+        1, 2, 3, 4,
         250, 251, 252, 253, 254
     ];
 
