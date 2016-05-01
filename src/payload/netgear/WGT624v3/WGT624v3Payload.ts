@@ -30,12 +30,13 @@ class WGT624v3Payload extends BasePayload {
     runPayload():Promise<boolean> {
         let doPayload = (credentials:BasicAuthCredential):Promise<boolean> => {
             return this.tryInjectPayload(credentials)
+                .then(() => this.clearQueuedMessages())
                 .then(() => this.tryRunInjectedPayload(credentials))
                 .then((res:boolean) => {
                     console.log("doPayload", this.baseUrl, credentials, res);
                     return res;
                 });
-        }
+        };
 
         let injectTestPromiseFuncs = WGT624v3Payload.CREDENTIALS_TO_TEST.map((credentials:BasicAuthCredential) => {
             return () => doPayload(credentials);
@@ -125,6 +126,18 @@ class WGT624v3Payload extends BasePayload {
 
             window.addEventListener('message', onMessage, false);
             timeoutId = setTimeout(onTimeout, timeout);
+        });
+    }
+
+    private clearQueuedMessages() {
+        return new Promise((resolve) => {
+            window.onmessage = (evt) => {
+                console.log('QUEUED MESSAGE', evt.data)
+            };
+            setImmediate(() => {
+                window.onmessage = null;
+                resolve();
+            });
         });
     }
 
