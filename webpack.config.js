@@ -9,7 +9,7 @@ var env = process.env.NODE_ENV;
 var config = {
     entry: {
         app: path.join(__dirname, 'src', 'main.ts'),
-        netgear_WGT624v3: path.join(__dirname, 'src', 'exploit', 'netgear_WGT624v3.ts')
+        netgear_wgt624v3: path.join(__dirname, 'src', 'exploit', 'netgear_WGT624v3.ts')
     },
     resolve: {
         extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
