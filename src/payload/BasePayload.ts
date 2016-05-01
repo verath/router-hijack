@@ -15,7 +15,6 @@ abstract class BasePayload implements Payload {
 
     run():Promise<boolean> {
         return this.runPayload()
-            .then(() => true)
             .catch((err) => {
                 console.log("Payload failed for:", this.fingerprintResult);
                 console.error(err);
@@ -23,7 +22,7 @@ abstract class BasePayload implements Payload {
             });
     }
 
-    protected abstract runPayload():Promise<any>
+    protected abstract runPayload():Promise<boolean>
 
     abstract isTarget():boolean
 

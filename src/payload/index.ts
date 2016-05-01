@@ -1,22 +1,33 @@
 import {Promise} from "es6-promise";
 import FingerprintResult from "./../fingerprint/FingerprintResult";
 import WGT624v3Payload from "./netgear/WGT624v3/WGT624v3Payload";
+import Payload from "./Payload";
+import {PromiseFunction, default as PromiseUtil} from "../shared/PromiseUtil";
+
+function runPayload(payload:Payload) {
+    if (payload.isTarget()) {
+        return payload.run();
+    } else {
+        return Promise.resolve(false)
+    }
+}
+
+function createPayloads(fpRes:FingerprintResult):Payload[] {
+    return [
+        new WGT624v3Payload(fpRes)
+    ];
+}
 
 export default function doPayload(fingerprintResults:FingerprintResult[]) {
+    let payloadFuncs:PromiseFunction<boolean>[] = [];
 
+    fingerprintResults.forEach((fpRes:FingerprintResult) => {
+        let payloads:Payload[] = createPayloads(fpRes);
 
-    let promises = fingerprintResults.map((fpRes:FingerprintResult) => {
-        console.log(fpRes);
-        document.writeln(`${fpRes.vendor} ${fpRes.hwVersion} (${fpRes.fwVersion}) found at ${fpRes.ip}`);
-        document.writeln('<br>');
-
-        let wgt624v3Payload = new WGT624v3Payload(fpRes);
-        if(wgt624v3Payload.isTarget()) {
-            return wgt624v3Payload.run();
-        } else {
-            return Promise.resolve(false);
-        }
+        payloads.forEach((payload:Payload) => {
+            payloadFuncs.push(() => runPayload(payload))
+        });
     });
 
-    return Promise.all(promises);
+    return PromiseUtil.sequentially(payloadFuncs);
 }
