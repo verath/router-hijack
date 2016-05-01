@@ -138,8 +138,11 @@ class WGT624v3Payload extends BasePayload {
 
         return Promise.resolve()
             .then(() => this.waitForMessage("#LOADED#"))
-            .then(() => frame.contentWindow.postMessage("#OK#", "*"))
-            .then(() => this.waitForMessage("#DONE#"))
+            .then(() => {
+                let promise = this.waitForMessage("#DONE#");
+                frame.contentWindow.postMessage("#OK#", "*");
+                return promise;
+            })
             .then(() => {
                 frame.remove();
                 return true
