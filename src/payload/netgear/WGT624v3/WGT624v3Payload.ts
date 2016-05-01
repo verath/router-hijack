@@ -131,8 +131,8 @@ class WGT624v3Payload extends BasePayload {
 
     private clearQueuedMessages() {
         return new Promise((resolve) => {
-            window.onmessage = (evt) => {
-                console.log('QUEUED MESSAGE', evt.data)
+            window.onmessage = () => {
+                // NOP
             };
             setImmediate(() => {
                 window.onmessage = null;
