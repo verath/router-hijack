@@ -101,7 +101,7 @@ class WGT624v3Payload extends BasePayload {
             .then(() => this.sendPostRequest(keywordUrl, saveKeywordsParams))
     }
 
-    private waitForMessage(expectedMessage:string, timeout:number = 2000):Promise<Window> {
+    private waitForMessage(expectedMessage:string, timeout:number = 4000):Promise<Window> {
         return new Promise((resolve, reject) => {
             let timeoutId:number;
             let done = (success:boolean, reason?:string) => {
@@ -113,7 +113,7 @@ class WGT624v3Payload extends BasePayload {
                     reject();
                 }
                 console.log('waitForMessage', expectedMessage, success, reason);
-            }
+            };
             let onTimeout = () => done(false, "onTimeout");
             let onMessage = (evt:MessageEvent) => {
                 if (evt.data === expectedMessage) {
@@ -121,7 +121,7 @@ class WGT624v3Payload extends BasePayload {
                 } else {
                     done(false, `${evt.data} != ${expectedMessage}`);
                 }
-            }
+            };
 
             window.addEventListener('message', onMessage, false);
             timeoutId = setTimeout(onTimeout, timeout);
