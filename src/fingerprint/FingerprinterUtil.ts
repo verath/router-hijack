@@ -5,6 +5,10 @@ interface ScriptVerifyFunction {
     (context:Window):boolean
 }
 
+/**
+ * A utility class for shared functionallity between the
+ * fingerprinters.
+ */
 export default class FingerprinterUtil {
 
     /**
@@ -44,9 +48,6 @@ export default class FingerprinterUtil {
     /**
      * Attempts to load all images provided. Returns a promise resolved with a
      * boolean for if all the images were loaded within the timeout or not.
-     *
-     * Note: The timeout is for each image, but does not account for idle time
-     * due to other images being loaded simultaneously.
      *
      * @param imageUrls Urls of the images to load.
      * @param [timeout=1000] Time to wait for each image to load (ms).

@@ -4,6 +4,9 @@ import BaseFingerprinter from "../../BaseFingerprinter";
 import IPAddress from "../../../shared/IPAddress";
 import PromiseUtil from "../../../shared/PromiseUtil";
 
+/**
+ * A fingerprinter for the Netgear WGT624v3 router.
+ */
 class WGT624v3Fingerprinter extends BaseFingerprinter {
 
     constructor() {

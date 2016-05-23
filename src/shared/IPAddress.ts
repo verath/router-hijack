@@ -13,10 +13,10 @@ class IPAddress {
      */
     constructor(address:number[]) {
         if (address.length !== 4) {
-            throw new Error('ipString must be a valid IPv4 address, was: ' + address.join('.'));
+            throw new Error('address must be a valid IPv4 address, was: ' + address.join('.'));
         }
         if (!address.every(part => part >= 0 && part <= 255)) {
-            throw new Error('ipString must be a valid IPv4 address, was: ' + address.join('.'));
+            throw new Error('address must be a valid IPv4 address, was: ' + address.join('.'));
         }
         for (let i = 0; i < 4; i++) {
             this.bytes[i] = address[i];

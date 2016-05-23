@@ -6,6 +6,10 @@ import doFingerprint from "./fingerprint/index";
 import doPayload from "./payload/index";
 import doLocalIp from "./local_ip/index";
 
+/**
+ * Returns a Promise resolved when the DOM is ready.
+ * @returns {Promise}
+ */
 function waitForDOMContentLoaded():Promise<any> {
     if (document.readyState === 'complete') {
         return Promise.resolve();
@@ -19,7 +23,9 @@ function waitForDOMContentLoaded():Promise<any> {
 /**
  * Prompts the user before starting the hijacking, as we
  * are doing things that might flag the user if he/she is
- * on an enterprise network.
+ * on an enterprise network (or the user might not want
+ * their DNS settings changed :)). Notice that this interaction
+ * is not necessary for the attack, and could be removed.
  */
 function getUserApproval():Promise<any> {
     return new Promise((resolve) => {
@@ -49,33 +55,55 @@ function getUserApproval():Promise<any> {
     });
 }
 
+/**
+ * Creates some textual grouping output around the provided function.
+ * @param groupName Name of the group.
+ * @param printFunc A function to be invoked for printing log data
+ *                  "inside" the group.
+ */
+function consoleGroup(groupName:string, printFunc:()=>void) {
+    console.log('');
+    console.log('#######################');
+    console.log(`${groupName}`);
+    console.log('-----------------------');
+    printFunc();
+    console.log('#######################');
+    console.log('');
+}
+
 function printLocalIp(ips:IPAddress[]):IPAddress[] {
-    console.group('Local Ip Results');
-    ips.forEach((ip) => {
-        console.info(ip.toString())
+    consoleGroup('Local Ip Results', () => {
+        ips.forEach((ip) => {
+            console.log(ip.toString())
+        });
     });
-    console.groupEnd();
     return ips;
 }
 
 function printDiscoveredDevices(ips:IPAddress[]):IPAddress[] {
-    console.group('Discover Results');
-    ips.forEach((ip) => {
-        console.info(ip.toString())
+    consoleGroup('Discover Results', () => {
+        ips.forEach((ip) => {
+            console.log(ip.toString())
+        });
     });
-    console.groupEnd();
     return ips;
 }
 
 function printFingerprintedDevices(fingerprints:FingerprintResult[]):FingerprintResult[] {
-    console.group('Fingerprint Results');
-    fingerprints.forEach((fp) => {
-        console.info(`${fp.ip} -> ${fp.vendor}:${fp.hwVersion}:${fp.fwVersion}`)
+    consoleGroup('Fingerprint Results', () => {
+        fingerprints.forEach((fp) => {
+            console.log(`${fp.ip} -> ${fp.vendor}:${fp.hwVersion}:${fp.fwVersion}`)
+        });
     });
-    console.groupEnd();
     return fingerprints;
 }
 
+/**
+ * The main entry point of the script.
+ *
+ * Runs all the different steps of the attack and outputs
+ * debug data between.
+ */
 (function main() {
     waitForDOMContentLoaded()
         .then(() => getUserApproval())

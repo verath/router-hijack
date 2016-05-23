@@ -4,10 +4,18 @@ import IPAddress from "../shared/IPAddress";
 /**
  * Class for finding ips of the user. This is achieved by using
  * STUN requests sent via WebRTC.
- * See https://github.com/diafygi/webrtc-ips
+ * Based on: https://github.com/diafygi/webrtc-ips
  */
 class WebRTCIPFinder {
 
+    /**
+     * Attempts to find ip addresses of the user, withing the specified
+     * timeout.
+     *
+     * @param timeout
+     * @returns {Promise<IPAddress[]>} Returns a promise resolved with an
+     * array of ip addresses of the user on success.
+     */
     public static findUserIps(timeout:number = 1000):Promise<IPAddress[]> {
         let RTCPeerConnection = window['RTCPeerConnection']
             || window['mozRTCPeerConnection']
@@ -54,11 +62,21 @@ class WebRTCIPFinder {
         });
     }
 
+    /**
+     * Takes an ice candidate object and parses the ip address.
+     *
+     * @param iceCandidate The ice candidate object.
+     * @returns {IPAddress} The ip address of the candidate, or null
+     * if an ip address could not be parsed.
+     */
     private static parseIpFromIceCandidate(iceCandidate):IPAddress {
         if (iceCandidate.ip) {
-            return iceCandidate.ip;
+            // This property is in the specs, but does not seem to be
+            // implemented currently (2016-05-23).
+            // https://w3c.github.io/webrtc-pc/#dom-rtcicecandidate-ip
+            return IPAddress.fromString(iceCandidate.ip);
         } else {
-            // See https://tools.ietf.org/html/rfc5245 - 15.1. "candidate" Attribute
+            // See https://tools.ietf.org/html/rfc5245#section-15.1
             let candidateAttribute = iceCandidate.candidate;
             let ipRegExp = /^candidate:[0-9A-z+/]+ \d+ \w+ \d+ (\S+)/i;
             let res = ipRegExp.exec(candidateAttribute);

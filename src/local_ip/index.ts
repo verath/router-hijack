@@ -2,6 +2,13 @@ import {Promise} from "es6-promise";
 import IPAddress from "../shared/IPAddress";
 import WebRTCIPFinder from "./WebRTCIPFinder";
 
+/**
+ * Function that attempt to find local ip(s) of the visitor,
+ * using the {@link WebRTCIPFinder}.
+ *
+ * @returns {Promise<IPAddress[]>} A promise for an array of ip addresses,
+ * representing the local ip addresses of the visitor.
+ */
 export default function doLocalIp():Promise<IPAddress[]> {
     return WebRTCIPFinder.findUserIps()
         .catch((err) => {

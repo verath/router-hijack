@@ -50,3 +50,9 @@ npm run watch
 To run the project open the `index.html` file in a browser. The `index.html` file
 is found in the output of the builds (i.e. `./dist/prod/index.html` for the prod build).
 
+## Demo
+A video was recorded demonstrating the framework:
+[https://www.youtube.com/watch?v=MBjTZufinrA](https://www.youtube.com/watch?v=MBjTZufinrA).
+
+A compiled version of the script is also available on the gh-pages:
+[http://verath.github.io/router-hijack/](http://verath.github.io/router-hijack/).
