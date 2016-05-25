@@ -1,9 +1,21 @@
 'use strict';
 
 var path = require('path');
+var child_process = require('child_process');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
+
+
+function parseGitRevision() {
+    var revParse = '';
+    try {
+        revParse = child_process.execSync('git rev-parse HEAD');
+    } catch (e) {
+        console.warn('Could not parse git revision!');
+    }
+    return revParse.toString().trim();
+}
 
 var env = process.env.NODE_ENV;
 var config = {
@@ -44,10 +56,10 @@ if (env === 'development') {
 
 // production specific settings
 if (env === 'production') {
-    var gitRevision = require('child_process').execSync('git rev-parse HEAD').toString().trim();
+    var gitRevision = parseGitRevision();
 
     config.plugins.push(
-        new webpack.optimize.UglifyJsPlugin()
+        new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}})
     );
     config.plugins.push(
         new webpack.BannerPlugin('Router Hijack - rev ' + gitRevision)
